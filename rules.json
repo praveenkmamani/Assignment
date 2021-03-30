@@ -1,0 +1,48 @@
+{
+  "rules": [
+    {
+      "allow" : "all",
+      "conditions": [
+          {
+            "Fieldname": "From",
+            "Predicate": "contains",
+            "Value": "techgig.com",
+            "constraint": "in"
+          },
+          {
+            "Fieldname": "Days",
+            "Predicate": "Less than",
+            "Value": "1",
+            "constraint": ">"
+          }
+        ],
+      "actions": [
+        {
+          "addLabelIds": "STARRED"
+        }
+      ]
+    },
+    {
+      "allow" : "any",
+      "conditions": [
+          {
+            "Fieldname": "From",
+            "Predicate": "contains",
+            "Value": "techgig.com",
+            "constraint": "in"
+          },
+          {
+            "Fieldname": "Days",
+            "Predicate": "Less than",
+            "Value": "1",
+            "constraint": ">"
+          }
+        ],
+      "actions": [
+        {
+          "removeLabelIds": "UNREAD"
+        }
+      ]
+    }
+  ]
+}
