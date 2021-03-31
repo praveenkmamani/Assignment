@@ -45,7 +45,7 @@ def gmailCredential(SCOPES):
 
 def getMessages(service, cn, cr):
     """
-    Function :      Gets all the messages from the gmail, stores in the GMAIL database and process rules as per the rules mentioned in rules.json
+    Function :      Gets all the messages from the gmail, stores in the GMAIL database.
     Arguments :     service - return value from function gmailCredential for accessing the GMAIL API
                     rules - the josn object from rules.json file which has the rules to be processed.
                     cn - Established Database connection
