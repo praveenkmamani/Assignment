@@ -12,7 +12,7 @@
           {
             "Fieldname": "Days",
             "Predicate": "Less than",
-            "Value": "1",
+            "Value": "2",
             "constraint": ">"
           }
         ],
