@@ -7,5 +7,8 @@ Please follow the below steps for successful execution of this script.
 
 2. Enable the [GMAIL](https://developers.google.com/gmail/api/quickstart/python) API and place the credentials.json file in the project folder
 
-3. Run the below command which will get the mails from GMAIL, creates a sqlite3 database (emails.db), stores the email in GMAIL table and process the rules as per rules.json.
+3. Run the below command which will get the mails from GMAIL, creates a sqlite3 database (emails.db), stores the email in GMAIL table
   ```python gmail.py```
+
+4. Run the below commad to process the rules as per the rules mentioned in rules.json
+  ```python rulesProcessing.py```
