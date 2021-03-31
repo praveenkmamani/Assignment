@@ -12,10 +12,10 @@ from googleapiclient.discovery import build
 import emailDatabase
 
 
-def gmailCredential():
+def gmailCredential(SCOPES):
     """
     Function  :     Opens a connection request to GMAIL API and creates a token file if it is created for the first time.
-    Arguments :     No argument values passed.
+    Arguments :     SCOPES - This is the default security scope on how to use the gmail api data.
     Return values : Returns the services for the authorized GMAIL API
     """
     try:
@@ -43,7 +43,7 @@ def gmailCredential():
         print("gmailCredential : ", e)
 
 
-def getMessages(service, rules, cn, cr):
+def getMessages(service, cn, cr):
     """
     Function :      Gets all the messages from the gmail, stores in the GMAIL database and process rules as per the rules mentioned in rules.json
     Arguments :     service - return value from function gmailCredential for accessing the GMAIL API
@@ -73,44 +73,9 @@ def getMessages(service, rules, cn, cr):
                     Days = str((datetime.datetime.now().date() - Date).days)    # variable to calculate the days for the date rule.
             # Below line inserts a row to the GMAIL database.
             emailDatabase.insertRow(cn, cr, Date, subject, From, msg['id'])
-            """The below set of lines process the message with all the rules mentioned in the rules.json file one by one"""
-            #====================================================RULES PROCESSING==========================================
-            for rule in rules["rules"]: # Loops through each and every rule in the rules.json and resolves the action mentioned.
-                conditionCount = len(rule["conditions"])    # This variable counts that all the condition has met or not for all/any rule constraint to resolve
-                for condition in rule["conditions"]:
-                    field_name = condition["Fieldname"]
-                    value = condition["Value"]
-                    operator = condition["constraint"]
-                    """The below line is a dynamic line to compare and do operations for the rules to process
-                        example : eval("tenmiles.com" in "abcpvtltd@gmail.com")"""
-                    if eval('"' + value + '"' +  operator  +'"'+ eval(field_name) +'"'):
-                        conditionCount -= 1
-                    """Checks all or any rules processed and does action as per the rules."""
-                    if rule["allow"] == "all" and conditionCount == 0:
-                        for label, action in rule["actions"][0].items():
-                            print(ruleActions(service, msg['id'], label, action), "Rule Processed(msg[id]) : " + str(msg['id']))
-
-                    elif rule["allow"] == "any" and conditionCount < len(rule["conditions"]):
-                        for label, action in rule["actions"][0].items():
-                            print(ruleActions(service, msg['id'], label, action), "Rule Processed(msg[id]) : " + str(msg['id']))
-                        break
     except Exception as e:
         print("getMessages: ", e)
 
-def ruleActions(serv, msgId, labl, actn):
-    """
-    Function :      Simple helper function to run the rules action.
-    Arguments :     serv - GMAIL services API
-                    msgID - The msgid for which the action to be taken
-                    labl - label change for the action, eg: removeLabelIds(which is an parameter for gmail api to remove the labels)
-                    actn - What action needs to be take with the laebl.
-    Return Values : Returns success.
-    """
-    try:
-        a = serv.users().messages().modify(userId='me', id=msgId, body={labl: [actn]}).execute()
-        return "success"
-    except Exception as e:
-        print("ruleActions : ", e)
 
 if __name__ == '__main__':
     # If modifying these scopes, delete the file token.json.
@@ -122,12 +87,11 @@ if __name__ == '__main__':
     with open("rules.json") as json_file:
         data = json.load(json_file)
     # Creating GMAIL service credentials.
-    ser = gmailCredential()
+    ser = gmailCredential(SCOPES)
     # Creating database connection
     DBcn, DBcr = emailDatabase.createDBconnection()
     # Creates Table if it is not created
     emailDatabase.createTable(DBcr)
     # Gets the messages and process the mesages as per the rules.
-    getMessages(ser, data, DBcn, DBcr)
-    # Reads the email from the database and prints each row.
-    emailDatabase.readTable(DBcr)
+    getMessages(ser, DBcn, DBcr)
+    print("Process completed - Reading gmails")

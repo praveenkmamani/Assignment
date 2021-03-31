@@ -62,8 +62,9 @@ def readTable(cur):
     try:
         cur.execute("SELECT * FROM GMAIL")
         allEmails = cur.fetchall()
-        for email in allEmails:
-            print(email)
+        return allEmails
+        # for email in allEmails:
+        #     print(email)
     except Exception as e:
         print(e)
 
